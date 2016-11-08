@@ -5,7 +5,7 @@ public class Grab : MonoBehaviour {
     //developped by Wei the Master
  
     public bool isGrabbing = false;
-    public float maxDistanceToGrab = 0.2f;
+    public float maxDistanceToGrab = 0.5f;
 
     public GameObject hand = null;
     public SteamVR_TrackedObject controller;
@@ -40,7 +40,7 @@ public class Grab : MonoBehaviour {
         hand.SetActive(false);
         thing.transform.SetParent(gameObject.transform);
         thing.transform.localPosition = Vector3.zero;
-        thing.GetComponent<Rigidbody>().isKinematic = false;
+        thing.GetComponent<Rigidbody>().isKinematic = true;
     }
 
     void dropOrThrow(GameObject thing)
@@ -49,7 +49,9 @@ public class Grab : MonoBehaviour {
         //give velocity
         hand.SetActive(true);
         thing.transform.SetParent(null);
-        thing.GetComponent<Rigidbody>().isKinematic = true;
+        thing.GetComponent<Rigidbody>().isKinematic = false;
+        thing.GetComponent<Rigidbody>().velocity = device.velocity;
+        thing.GetComponent<Rigidbody>().angularVelocity = device.angularVelocity;
     }
 
     GameObject checkSphereAroundHand(Vector3 centerPoint, float distance)
@@ -65,6 +67,8 @@ public class Grab : MonoBehaviour {
             //loop check the nearest one
             float nearDistance = distance;
 
+
+            Debug.Log("enter it");
             foreach (Collider a in hits)
             {
                 if(Vector3.Distance(a.transform.position, centerPoint) < nearDistance)
