@@ -11,7 +11,8 @@ public class PVRCItem : MonoBehaviour {
 
     private const float VelocityMagic = 6000f;
     private const float MaxVelocityChange = 10f;
-
+    private const float MaxAngularVelocityChange = 30f;
+    private const float AngularVelocityMagic = 100f;
 
     private bool isAttached = false;
     private GameObject hand = null;
@@ -28,24 +29,38 @@ public class PVRCItem : MonoBehaviour {
 	void Start () {
         Rigidbody = GetComponent<Rigidbody>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 
     protected virtual void FixedUpdate()
     {
         if (isAttached)
         {
 
-            Quaternion rotationDelta;
+            Quaternion rotationDelta = Quaternion.identity;
             Vector3 positionDelta = Vector3.zero;
+
+            float angle;
+            Vector3 axis;
 
             if(interactionPoint != null)
             {
                 positionDelta = hand.transform.position - interactionPoint.position;
+                rotationDelta = hand.transform.rotation * Quaternion.Inverse(interactionPoint.rotation);
+            }
+
+
+            rotationDelta.ToAngleAxis(out angle, out axis);
+
+            if (angle > 180)
+                angle -= 360;
+
+            if(angle != 0)
+            {
+                Vector3 angularTarget = angle * axis;
+                if(float.IsNaN(angularTarget.x) == false)
+                {
+                    angularTarget = (angularTarget * AngularVelocityMagic) * Time.fixedDeltaTime;
+                    this.Rigidbody.angularVelocity = Vector3.MoveTowards(this.Rigidbody.angularVelocity, angularTarget, MaxAngularVelocityChange);
+                }
             }
 
             Vector3 velocityTarget = (positionDelta * VelocityMagic) * Time.fixedDeltaTime;
