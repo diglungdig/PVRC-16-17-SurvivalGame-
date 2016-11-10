@@ -37,21 +37,23 @@ public class Grab : MonoBehaviour {
 	
     void startGrabbing(GameObject thing)
     {
-        hand.SetActive(false);
-        thing.transform.SetParent(gameObject.transform);
-        thing.transform.localPosition = Vector3.zero;
-        thing.GetComponent<Rigidbody>().isKinematic = true;
+        //hand.SetActive(false);
+        //thing.transform.SetParent(gameObject.transform);
+        //thing.transform.localPosition = Vector3.zero;
+        //thing.GetComponent<Rigidbody>().isKinematic = true;
+        thing.GetComponent<PVRCItem>().setAttached(this.gameObject);
     }
 
     void dropOrThrow(GameObject thing)
     {
         //set isGrabbing to false
         //give velocity
-        hand.SetActive(true);
-        thing.transform.SetParent(null);
-        thing.GetComponent<Rigidbody>().isKinematic = false;
+        //hand.SetActive(true);
+        //thing.transform.SetParent(null);
+        //thing.GetComponent<Rigidbody>().isKinematic = false;
         thing.GetComponent<Rigidbody>().velocity = device.velocity;
         thing.GetComponent<Rigidbody>().angularVelocity = device.angularVelocity;
+        thing.GetComponent<PVRCItem>().setAttached(null);
     }
 
     GameObject checkSphereAroundHand(Vector3 centerPoint, float distance)
