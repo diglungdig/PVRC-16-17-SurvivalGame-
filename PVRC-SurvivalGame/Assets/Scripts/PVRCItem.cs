@@ -25,10 +25,13 @@ public class PVRCItem : MonoBehaviour {
         this.hand = hand;
     }
 
-	// Use this for initialization
-	void Start () {
+    protected virtual void Awake()
+    {
         Rigidbody = GetComponent<Rigidbody>();
-	}
+        this.Rigidbody.maxAngularVelocity = 100f;
+
+    }
+
 
     protected virtual void FixedUpdate()
     {
